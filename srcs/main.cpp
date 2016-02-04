@@ -34,7 +34,6 @@ int		main(int argc, char **argv) {
 			std::cerr << "exception : " << e.what() << std::endl;
 		}
 	}
-
 	else {
 		std::cout << "Usage : ./npuzzle [file]" << std::endl;
 	}

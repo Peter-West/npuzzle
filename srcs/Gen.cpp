@@ -49,20 +49,20 @@ std::string		Gen::manu_me_casse_les_couilles(int m) {
 	int		lmt = this->_size * this->_size;
 	int		count_m = 0;
 
-	std::cout << "m : " << m;
+	// std::cout << "m : " << m;
 	if (m == 0)
 		m = 1;
 	while (m < lmt) {
 		if ((m = m * 10) < lmt)
 			count_m++;
 	}
-	std::cout << " count_m : " << count_m << std::endl;
+	// std::cout << " count_m : " << count_m << std::endl;
 	while (count_m > 0)
 	{
 		pfff += "0";
 		count_m--;
 	}
-	std::cout << std::endl;
+	// std::cout << std::endl;
 	return pfff;
 }
 
@@ -70,7 +70,8 @@ void			Gen::pour_faire_plaisir_a_manu() {
 	int	i = 0;
 
 	for(std::vector<int>::iterator it = puzzle.begin(); it != puzzle.end(); it++) {
-		std::cout << this->manu_me_casse_les_couilles(*it) << *it;
+		// std::cout << this->manu_me_casse_les_couilles(*it) << *it;
+		std::cout << *it;
 		i++;
 		if ((i % (this->_size) == 0))
 			std::cout << std::endl;

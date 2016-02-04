@@ -19,6 +19,8 @@ private:
 
 	int					get_position(int x, int y);
 	void				test();
+	void				to_match();
+
 };
 
 #endif
