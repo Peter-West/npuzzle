@@ -18,6 +18,7 @@ public:
 
 	std::vector<int>	puzzle;
 	int					size;
+
 private:
 	std::vector<int>	&split(const std::string &s, char delim, std::vector<int> &puzzle);
 	void				split(const std::string &s, char delim);

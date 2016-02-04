@@ -11,12 +11,12 @@
 #******************************************************************************#
 
 NAME				:= np
-SRCS				:= main.cpp Parser.cpp
+SRCS				:= main.cpp Parser.cpp Solve.cpp Gen.cpp
 PATH_OBJ			:= objs
 PATH_SRC			:= srcs
 PATH_INC			:= incs
-CXX					:= clang++
-CXXFLAGS			:= -Wall -Wextra -Werror
+CXX					:= clang++-3.5
+CXXFLAGS			:= -Wall -Wextra -Werror -std=c++11
 DEBUG				:= -g
 OBJECTS				:= $(patsubst %.cpp, $(PATH_OBJ)/%.o, $(SRCS))
 INCLUDES			:= -I./$(PATH_INC)
@@ -26,7 +26,7 @@ INCLUDES			:= -I./$(PATH_INC)
 all: $(NAME)
 
 $(NAME): $(OBJECTS)
-	$(CXX) -o $@ $(OBJECTS) $(LIBRARY) $(DEBUG) $(CXXFLAGS) -lncurses
+	$(CXX) -o $@ $(OBJECTS) $(LIBRARY) $(DEBUG) $(CXXFLAGS)
 
 $(PATH_OBJ)/%.o: $(addprefix $(PATH_SRC)/,%.cpp)
 	@mkdir -p $(PATH_OBJ)
