@@ -1,13 +1,14 @@
 #include "Solve.hpp"
+#include <unistd.h>
 
 Solve::Solve() {
 
 }
 
 Solve::Solve(std::vector<int> puzzle, int size) : _puzzle(puzzle), _size(size) {
-	this->_size = 4;
-	this->test();
-	this->to_match();
+	// this->test();
+	// this->to_match();
+	this->find_0();
 }
 
 Solve::Solve(Solve const & src) {
@@ -33,6 +34,25 @@ int		Solve::get_position(int x, int y) {
 		return (-1);
 }
 
+std::map<int,int>	Solve::find_0() {
+	int					i = 0;
+	int					x = 0;
+	int					y = 0;
+	std::map<int,int>	res;
+
+	for(std::vector<int>::iterator it=this->_puzzle.begin() ; it != this->_puzzle.end() ; it++) {
+		if (*it == 0) {
+			x = i % this->_size;
+			y = i / this->_size;
+			std::cout << "zero => X : " << x << ", Y: " << y << std::endl;
+			res[x] = y;
+			return (res);
+		}
+		i++;
+	}
+	return (res);
+}
+
 void	Solve::test(void) {
 	int		D = get_position(1, 2);
 	
@@ -41,105 +61,42 @@ void	Solve::test(void) {
 }
 
 void	Solve::to_match(void) {
-	std::vector<int>	solution(this->_size * this->_size, -1);
-	int					i = 1;
-	int					x_max = this->_size - 1;
-	int					x_min = 0;
-	int					y_max = this->_size - 1;
-	int					y_min = 0;
+	int					total_size = this->_size * this->_size;
+	std::vector<int>	puzzle(total_size, -1);
+	int					current = 1;
 	int					x = 0;
+	int					ix = 1;
 	int					y = 0;
+	int					iy = 0;
 
-	while (i < (this->_size * this->_size) + 1) {
-		while (x <= x_max && x >= x_min) {
-			std::cout << "Dans X => i : " << i << "; x : " << x << "; y : " << y << std::endl;	
-			
-			solution[get_position(x, y)] = i;
-			if (y == y_max && x >= x_min) {
-				// std::cout << "ICI !! x : " << x << std::endl;
-				x--;
-			}
-			else if (x <= x_max) {
-				// x_max--;
-				x++;
-				std::cout << "ICI !! x : " << x << std::endl;
-			}
-			i++;
-			if (x == x_max && y == y_min) {
-				y_min++;
-			}
-			if (x == x_min && y == y_max) {
-				y_max--;
-			}
-			/*if (x == x_max || x == x_min) {
-				// x_max--;
-				// static int i = 0;
-				// if (i > 1)
-				// 	y_min--;
-				break ;
-			}*/
-			/*if (x == y) {
-				std::cout << "LA !!!!!!!!" <<std::endl;
-				// y_min++;
-				x_max--;
-			}*/
+	while (1) {
+		puzzle[x + y * this->_size] = current;
+		if (current == 0)
+			break ;
+		current++;
+		if (x + ix == this->_size || x + ix < 0 || (ix != 0 && puzzle[x + ix + y * this->_size] != -1)) {
+			iy = ix;
+			ix = 0;
 		}
-
-		if (x > x_max)
-			x = x_max;
-		if (x < x_min)
-			x = x_min;
-
-		while (y <= y_max && y >= y_min) {
-			std::cout << "Dans Y => i : " << i << "; x : " << x << "; y : " << y << std::endl;	
-			
-			solution[get_position(x, y)] = i;
-			if (x == x_min && y >= y_min) {
-				// y_min++;
-				// x_max--;
-				y--;
-				std::cout << "ICI !! y : " << y << std::endl;
-			}
-			else if (y <= y_max)
-				y++;
-			i++;
-			if (y == y_min && x == x_min) {
-				x_min++;
-			}
-			if (y == y_max && x == x_max) {
-				x_max--;
-			}
-			/*if (y == y_max || y == y_min) {
-				// std::cout<< "changement de limite" << std::endl;
-				// x_max--;
-				break ;
-			}*/
-			/*if (x == y) {
-				std::cout << "LA !!!!!!!!" <<std::endl;
-				x_max--;
-			}*/
+		else if (y + iy == this->_size || y + iy < 0 || (iy != 0 && puzzle[x + (y + iy) * this->_size] != -1)) {
+			ix = -iy;
+			iy = 0;
 		}
-		if (y > y_max)
-			y = y_max;
-		if (y < y_min)
-			y = y_min;
-
-				// y_min++;
-		
-		std::cout << "x_max : " << x_max <<std::endl;
-		std::cout << "x_min : " << x_min <<std::endl;
-		std::cout << "y_max : " << y_max <<std::endl;
-		std::cout << "y_min : " << y_min <<std::endl;
-		
-		// x_max--;
+		x += ix;
+		y += iy;
+		if (current == total_size) {
+			current = 0;
+		}
 	}
 
-	i = 0;
-	for (std::vector<int>::iterator it=solution.begin() ; it != solution.end() ; it++) {
+	this->_solution = puzzle;
+
+	int					i = 0;
+
+	for (std::vector<int>::iterator it=this->_solution.begin() ; it != this->_solution.end() ; it++) {
 		if (i != 0 && (i % this->_size) == 0)
 			std::cout << std::endl;
 		i++;
 		std::cout << *it << " ";
 	}
-
 }

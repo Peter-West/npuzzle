@@ -3,6 +3,7 @@
 
 # include <iostream>
 # include <vector>
+# include <map>
 
 class Solve
 {
@@ -15,11 +16,14 @@ public:
 
 private:
 	std::vector<int>	_puzzle;
+	std::vector<int>	_solution;
 	int					_size;
+
 
 	int					get_position(int x, int y);
 	void				test();
 	void				to_match();
+	std::map<int,int>	find_0();
 
 };
 
