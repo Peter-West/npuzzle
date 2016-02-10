@@ -20,6 +20,7 @@ int		main(int argc, char **argv) {
 				i++;
 			}*/
 			g = new Gen(std::stoi(argv[2]));
+			delete g;
 		}
 	}
 
@@ -29,8 +30,11 @@ int		main(int argc, char **argv) {
 		try {
 			p = new Parser(argv[1]);
 			s = new Solve(p->puzzle, p->size);
+			delete p;
+			delete s;
 		}
 		catch (std::exception &e){
+			
 			std::cerr << "exception : " << e.what() << std::endl;
 		}
 	}

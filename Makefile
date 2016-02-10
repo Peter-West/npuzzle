@@ -11,7 +11,7 @@
 #******************************************************************************#
 
 NAME				:= np
-SRCS				:= main.cpp Parser.cpp Solve.cpp Gen.cpp Astar.cpp
+SRCS				:= main.cpp Parser.cpp Solve.cpp Gen.cpp
 PATH_OBJ			:= objs
 PATH_SRC			:= srcs
 PATH_INC			:= incs
