@@ -11,10 +11,14 @@ struct point {
 	int		value;
 	int		x;
 	int		y;
-	int		cost;
-	int		heuristic;
 	bool	zero;
 	bool	right_place;
+};
+
+struct node {
+	std::vector<point>	*map;
+	int		cost;
+	int		heuristic;
 };
 
 class Solve
@@ -29,9 +33,8 @@ public:
 private:
 	std::vector<int>				_puzzle;
 	std::vector<int>				_solution;
-	// std::vector<t_points>		_points;
 	std::vector<point>				_points;
-	std::vector<std::vector<point>>	_list;
+	std::vector<node>				_list;
 	int								_size;
 	// int						g_score;
 	// int						f_score;
