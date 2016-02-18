@@ -65,29 +65,39 @@ int		Solve::heuristic_manhattan_distance() {
 }
 
 void	Solve::add_map_and_swap(int xm, int ym, int i0) {
-	std::vector<point>	tmp_map;
 	int					i = 0;
-	std::cout << "xm : " << xm << ", ym : " << ym << std::endl;
+	std::vector<point> tmp_map;
 
+	std::cout << "xm : " << xm << ", ym : " << ym << std::endl;
 // PB0 : Recherche dans le vecteur de vecteur plutot que dans la carte de base
 // => pas les meme args entre les points et les maps
 //node = map + modif + parents + cout+ heur...
 
 	for (std::vector<point>::iterator it=this->_points.begin() ; it != this->_points.end() ; it++) {
 		if (it->x == xm && it->y == ym) {
-			std::vector<point> tmp_map = this->_points;
-			this->_list.push_back(std::vector<point>());
-			// std::cout << "it->x : " << it->x << " ,it->y : " << it->y << std::endl;
-			// std::cout << "i : " << i << ", iO : " << i0 << std::endl;
-			// std::cout << "tmp_map[i0].x : " << tmp_map[i0].x << ", tmp_map[i0].y : " << tmp_map[i0].y << std::endl;
-			// std::cout << "tmp_map[i].x : " << tmp_map[i].x << ", tmp_map[i].y : " << tmp_map[i].y << std::endl;
-			std::swap(tmp_map[i0].x , tmp_map[i].x);
-			std::swap(tmp_map[i0].y , tmp_map[i].y);
-			this->_list.back() = tmp_map;
+			tmp_map = this->_points;
+			// printf()
+			// node	nod;
+			// nod.map.push_back(std::vector<point>())
+			this->_list.push_back(node());
+			// this->_list.push_back();
+			// this->_list[i].map.push_back(point());
+
+			_list[i].map = tmp_map;
+			std::cout << "size : " << _list[i].map.size() << std::endl;
+			std::swap(tmp_map[i0].x, tmp_map[i].x);
+			std::swap(tmp_map[i0].y, tmp_map[i].y);
+			std::copy(tmp_map.begin(), tmp_map.end(), _list[i].map.begin());
+			// nod.map = tmp_map;
+			// printf("_list[i].map ptr : %p \n", _list[i].map);
+			std::cout<< "add map and swap, i : " << i << std::endl;
+			for (int j = 0 ; j < (int)_list[i].map.size() ; j++) {
+				std::cout << _list[i].map[j].value << " ";
+			}
+			std::cout << std::endl;
+			i++;
 		}
-		i++;
 	}
-	this->print();
 }
 
 void	Solve::count_poss(point zero, int i) {
@@ -116,6 +126,8 @@ void	Solve::count_poss(point zero, int i) {
 	}
 
 	std::cout << "count possibility : " << count << std::endl;
+	this->print();
+
 }
 
 void	Solve::move_empty_point() {
@@ -180,24 +192,24 @@ void	Solve::print() {
 	int		j;
 	char	Array[this->_size][this->_size];
 
-	for (std::vector<std::vector<point>>::iterator it = this->_list.begin(); it != this->_list.end() ; it++) {
-		for (std::vector<point>::iterator iit = it->begin(); iit != it->end() ; iit++ ) {
-			// std::cout << iit->value;
+	std::cout << "HEYYYY ! " << std::endl;
+	for (std::vector<node>::iterator it = this->_list.begin(); it != this->_list.end() ; it++) {
+		// if (it->map)
+			std::cout << "map size : " << it->map.size() << std::endl;
+		// else
+			// std::cout << "no map" << std::endl;
+		for (std::vector<point>::iterator iit = it->map.begin(); iit != it->map.end() ; iit++) {
+			
+			// std::cout << iit->value << " ";
+			std::cout << "here" << std::endl;
 			Array[iit->y][iit->x] = iit->value;
-			// std::cout << "iit->y : " << iit->y << ", iit->x : " << iit->x << ", iit->value : " << iit->value << std::endl; 
-			/*if (i != 0 && (i % this->_size) == 0)
-				std::cout << std::endl;
-			else
-				std::cout << " ";*/
-			// i++;
 		}
-		// std::cout << std::endl;
 	}
-	// std::cout << std::endl;
+	std::cout << std::endl << "END" << std::endl;
+
 	std::cout << "**************" << std::endl;
 	for (i = 0 ; i < this->_size ; i++) {
 		for (j = 0 ; j < this->_size ; j++) {
-			// std::cout << itoa(Array[i][j], buf, 10) << ". ";
 			printf("%d ", Array[i][j]);
 		}
 		std::cout << std::endl;

@@ -4,6 +4,7 @@
 # include <iostream>
 # include <vector>
 # include <map>
+# include <algorithm>
 # include "Astar.hpp"
 
 
@@ -16,9 +17,10 @@ struct point {
 };
 
 struct node {
-	std::vector<point>	*map;
-	int		cost;
-	int		heuristic;
+	std::vector<point>	map;
+	struct node			*parent;
+	int					cost;
+	int					heuristic;
 };
 
 class Solve
