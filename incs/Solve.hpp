@@ -45,10 +45,10 @@ private:
 	void					test();
 	void					to_match();
 	void					fill_vec_points();
-	void					count_poss(point zero, int i);
+	void					count_poss(point zero, int point_zero, int current_node);
 	void					move_empty_point();
 	int						heuristic_manhattan_distance();
-	void					add_map_and_swap(int xm, int ym, int i0);
+	void					add_map_and_swap(int xm, int ym, int i0, int current_node);
 	void					print();
 };
 
