@@ -34,7 +34,7 @@ public:
 
 private:
 	std::vector<int>				_puzzle;
-	std::vector<int>				_solution;
+	std::vector<point>				_solution;
 	std::vector<point>				_points;
 	std::vector<node>				_list;
 	int								_size;
