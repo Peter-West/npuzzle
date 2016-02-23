@@ -71,7 +71,6 @@ void	Solve::add_map_and_swap(int xm, int ym, int i0, int current_node) {
 
 	std::cout << "xm : " << xm << ", ym : " << ym << std::endl;
 
-	// current map non conservé **********
 
 
 	for (std::vector<point>::iterator it=this->_list[current_node].map.begin() ; it !=this->_list[current_node].map.end() ; it++) {
@@ -79,70 +78,24 @@ void	Solve::add_map_and_swap(int xm, int ym, int i0, int current_node) {
 		
 			tmp_map.resize(this->_size*this->_size);
 			
-			// std::cout << "**test size : " << this->_list[current_node].map.size() << std::endl;
-
 			std::copy(this->_list[current_node].map.begin(), this->_list[current_node].map.end(), tmp_map.begin());
 			
-			// nod.map.push_back(std::vector<point>())
-			// this->_list[current_point].map.push_back(point());
-
-			// std::cout << "size : " << this->_list[current_node].map.size() << std::endl;
-			// std::copy(tmp_map.begin(), tmp_map.end(), _list[current_node].map.begin());
-			
-			// verifie coord des deux points ***********
+			std::cout << "i0 : " << i0 << ", current_point : " << current_point << std::endl;
+			std::cout << "tmp_map[i0].x : " << tmp_map[i0].x << ", tmp_map[current_point].x : " << tmp_map[current_point].x << std::endl;
+			std::cout << "tmp_map[i0].y : " << tmp_map[i0].y << ", tmp_map[current_point].y : " << tmp_map[current_point].y << std::endl;
 
 			std::swap(tmp_map[i0].x, tmp_map[current_point].x);
 			std::swap(tmp_map[i0].y, tmp_map[current_point].y);
 			this->_list.push_back(node());
 			this->_list.back().map = tmp_map;
+			this->_list.back().parent = &this->_list[current_node];
 			
-			// std::cout<< "add map and swap, current_point : " << current_point << std::endl;
 			std::cout << "_list map size : " << this->_list[current_node].map.size() << ", i0 : " << i0 << std::endl;
-			
-			/*for (int j = 0 ; j < (int)_list[current_point].map.size() ; j++) {
-				std::cout << _list[current_point].map[j].value << " ";
-			}*/
-			// std::cout << std::endl;
 
-			current_point++;
 		}
+		current_point++;
 	}
 }
-
-
-/*
-	for (std::vector<point>::iterator it=this->_points.begin() ; it != this->_points.end() ; it++) {
-		if (it->x == xm && it->y == ym) {
-			tmp_map.resize(this->_size*this->_size);
-			// tmp_map = this->_list[i0].map;
-
-			std::cout << "**test size : " << this->_list[i0].map.size() << std::endl;
-
-			std::copy(this->_list[i0].map.begin(), this->_list[i0].map.end(), tmp_map.begin());
-			
-			// nod.map.push_back(std::vector<point>())
-			this->_list.push_back(node());
-			// this->_list[i].map.push_back(point());
-
-			_list[i].map = tmp_map;
-			std::cout << "size : " << _list[i].map.size() << std::endl;
-			std::swap(tmp_map[i0].x, tmp_map[i].x);
-			std::swap(tmp_map[i0].y, tmp_map[i].y);
-			std::copy(tmp_map.begin(), tmp_map.end(), _list[i].map.begin());
-			// printf("_list[i].map ptr : %p \n", _list[i].map);
-			
-			std::cout<< "add map and swap, i : " << i << std::endl;
-			
-			for (int j = 0 ; j < (int)_list[i].map.size() ; j++) {
-				std::cout << _list[i].map[j].value << " ";
-			}
-
-			std::cout << std::endl;
-			i++;
-		}
-	}
-*/
-
 
 void	Solve::count_poss(point zero, int point_zero, int current_node) {
 	int						count = 0;
@@ -169,36 +122,43 @@ void	Solve::count_poss(point zero, int point_zero, int current_node) {
 		count++;
 	}
 
-	this->print();
 	std::cout << "count possibility : " << count << std::endl;
+	std::cout << "this->_list.size : " << this->_list.size() << std::endl;
+	std::cout << "current_node : " << current_node << std::endl;
+	std::cout << "0 _list[current_node].map.size() : " << this->_list[current_node].map.size() << std::endl;
+	this->print();
+	std::cout << "1 _list[current_node].map.size() : " << this->_list[current_node].map.size() << std::endl;
 
 }
 
 void	Solve::move_empty_point() {
-	int		point_zero = 0;
-	int		current_node = 0;
-
 	this->_list.push_back(node());
+	std::cout << "test taille: " << this->_list.size() << std::endl;
 	std::cout << "test taille: " << this->_list.size() << std::endl;
 	this->_list[0].map.resize(this->_size*this->_size);
 	std::copy(this->_points.begin(), this->_points.end(), this->_list[0].map.begin());
 	std::cout << "test taille map : " << this->_list[0].map.size() << std::endl;
-	for (std::vector<node>::iterator it=this->_list.begin() ; it != this->_list.end() ; it++) {
-		if (current_node > 0)
-			break ;
-		printf("current_node : %d\n", current_node);
-		for (std::vector<point>::iterator iit=it->map.begin() ; iit !=it->map.end() ; iit++) {
-			if (iit->zero == true){
-				printf("point_zero found at : %d\n", point_zero);
-				this->count_poss(*iit, point_zero, current_node);
+	for (size_t current_node = 0 ; current_node < this->_list.size() ; current_node++) {
+		if (current_node > 0) {
+			std::cout << "current_node : " << current_node << std::endl;
+			sleep(1);
+			// break;
+		}
+		printf("current_node : %zu\n", current_node);
+		for (size_t point_zero = 0 ; point_zero < this->_list[current_node].map.size() ; point_zero++) {
+			if (this->_list[current_node].map[point_zero].zero == true){
+				printf("point_zero found at : %zu\n", point_zero);
+				std::cout << "*********it->map.size : " << this->_list[current_node].map.size() << std::endl;
+				this->count_poss(this->_list[current_node].map[point_zero], point_zero, current_node);
+				std::cout << "*********it->map.size : " << this->_list[current_node].map.size() << std::endl;
+				
 			}
 			if (point_zero > 24) {
-				printf("it->map.size() : %lu, point_zero : %d\n", it->map.size(), point_zero);
+				std::cout << "current_node : " << current_node << std::endl;
+				printf("it->map.size() : %lu, point_zero : %zu\n", this->_list[current_node].map.size(), point_zero);
 				sleep(1);
 			}
-			point_zero++;
 		}
-		current_node++;
 	}
 }
 
@@ -239,15 +199,6 @@ void	Solve::to_match(void) {
 	}
 
 	this->_solution = puzzle;
-/*
-	int					i = 0;
-
-	for (std::vector<int>::iterator it=this->_solution.begin() ; it != this->_solution.end() ; it++) {
-		if (i != 0 && (i % this->_size) == 0)
-			std::cout << std::endl;
-		i++;
-		std::cout << *it << " ";
-	}*/
 }
 
 void	Solve::print() {
@@ -255,6 +206,7 @@ void	Solve::print() {
 	int		j;
 	char	Array[this->_size][this->_size];
 
+	std::cout << std::endl << "**** START ****" << std::endl;
 	std::cout << "_list.size : " << this->_list.size() << std::endl;
 
 	for (std::vector<node>::iterator it = this->_list.begin(); it != this->_list.end() ; it++) {
@@ -277,5 +229,5 @@ void	Solve::print() {
 		std::cout << "**************" << std::endl;
 		std::cout << std::endl;
 	}
-	std::cout << std::endl << "END" << std::endl;
+	std::cout << std::endl << "**** END ****" << std::endl;
 }
