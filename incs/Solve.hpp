@@ -20,9 +20,12 @@ struct node {
 	std::vector<point>	map;
 	struct node			*parent;
 	int					cost;
-	int					heuristic;
+	int					h_cost;
+	int					g_score;
+	int					f_score;
 };
-
+//degager la list pour la remplacer par l'openlist
+//ajouter les possibilites tour par tour
 class Solve
 {
 public:
@@ -37,9 +40,10 @@ private:
 	std::vector<point>				_solution;
 	std::vector<point>				_points;
 	std::vector<node>				_list;
+	std::vector<node>				_open_set;
+	std::vector<node>				_closed_set;
+	std::vector<node>				_total_path;
 	int								_size;
-	// int						g_score;
-	// int						f_score;
 
 	int						get_position(int x, int y);
 	void					test();
@@ -47,9 +51,11 @@ private:
 	void					fill_vec_points();
 	void					count_poss(point zero, int point_zero, int current_node);
 	void					move_empty_point();
-	int						heuristic_manhattan_distance();
-	void					add_map_and_swap(int xm, int ym, int i0, int current_node);
+	int						heuristic_manhattan_distance(node n);
+	void					add_map_and_swap(int xm, int ym, int i0, int current_node, int g_count);
 	void					print();
+	int						Compare2nodes(node n1, node n2);
+	void					tesssst();
 };
 
 #endif

@@ -11,7 +11,8 @@ Solve::Solve(std::vector<int> puzzle, int size) : _puzzle(puzzle), _size(size) {
 	// this->test();
 	this->to_match();
 	this->fill_vec_points();
-	this->move_empty_point();
+	// this->move_empty_point();
+	this->tesssst();
 }
 
 Solve::Solve(Solve const & src) {
@@ -27,10 +28,20 @@ Solve &Solve::operator=(Solve const & rhs) {
 	return (*this);
 }
 
+void	Solve::tesssst() {
+	node	n1;
+	node	n2;
+
+	n1.map = _points;
+	n2.map = _solution;
+
+	
+	printf (">>>>>>%d\n", this->Compare2nodes(n1, n2));
+}
+
 int		Solve::get_position(int x, int y) {
 	int	pos = (x + (y * this->_size));
 
-	// if (pos < static_cast<int>(_puzzle.size()))
 	if (pos < static_cast<int>(this->_size * this->_size))
 		return (pos);
 	else 
@@ -57,15 +68,17 @@ void	Solve::fill_vec_points() {
 		// std::cout << "value : " << it->value << ", x : " << it->x << ", y : " << it->y << ". Zero ? : " << it->zero << std::endl;
 	}*/
 }
+/*
+void	Solve::shortest_way() {
 
-
+}*/
 
 int		Solve::heuristic_manhattan_distance(node n) {
 	int	res = 0;
 
-	for (int i = 0; i < n.map.size() ; i++) {
-		for (int j = 0; j < this->_solution ; j++) {
-			if (n.map[i].value == this->_solution[j]) {
+	for (size_t i = 0; i < n.map.size() ; i++) {
+		for (size_t j = 0; j < this->_solution.size() ; j++) {
+			if (n.map[i].value == this->_solution[j].value) {
 				res += abs(n.map[i].x - this->_solution[j].x) + abs(n.map[i].y - this->_solution[j].y);
 			}
 		}
@@ -83,8 +96,7 @@ int		Solve::Compare2nodes(node n1, node n2) {
 		return (-1);
 }
 
-
-void	Solve::add_map_and_swap(int xm, int ym, int i0, int current_node) {
+void	Solve::add_map_and_swap(int xm, int ym, int i0, int current_node, int g_count) {
 	int					current_point = 0;
 	std::vector<point>	tmp_map;
 
@@ -114,9 +126,12 @@ void	Solve::add_map_and_swap(int xm, int ym, int i0, int current_node) {
 				// printf("adresse parent map %p\n", &this->_list[current_node].parent->map[i0]);
 				// std::cout << "this->_list[current_node].parent->map[i0].x : " << this->_list[current_node].parent->map[i0].x << std::endl;
 			}
+			this->_list.back().g_score = g_count;
 			this->_list.back().parent = &this->_list[current_node];
 			
 			std::cout << "_list map size : " << this->_list[current_node].map.size() << ", i0 : " << i0 << std::endl;
+
+			// this->
 
 		}
 		current_point++;
@@ -125,28 +140,31 @@ void	Solve::add_map_and_swap(int xm, int ym, int i0, int current_node) {
 
 void	Solve::count_poss(point zero, int point_zero, int current_node) {
 	int						count = 0;
+	static int				g_count = 0;
 	std::vector<point>		tmp;
 
+	g_count++;
 	std::cout << "x : " << zero.x << ", y : " << zero.y << std::endl;
 	if ((zero.x - 1) > -1) {
-		add_map_and_swap(zero.x - 1, zero.y, point_zero, current_node);
+		add_map_and_swap(zero.x - 1, zero.y, point_zero, current_node, g_count);
 		count++;
 	}
 
 	if ((zero.x + 1) < this->_size){
-		add_map_and_swap(zero.x + 1, zero.y, point_zero, current_node);
+		add_map_and_swap(zero.x + 1, zero.y, point_zero, current_node, g_count);
 		count++;
 	}
 	
 	if ((zero.y - 1) > -1) {
-		add_map_and_swap(zero.x, zero.y - 1, point_zero, current_node);
+		add_map_and_swap(zero.x, zero.y - 1, point_zero, current_node, g_count);
 		count++;
 	}
 	
 	if ((zero.y + 1) < this->_size) {
-		add_map_and_swap(zero.x, zero.y + 1, point_zero, current_node);
+		add_map_and_swap(zero.x, zero.y + 1, point_zero, current_node, g_count);
 		count++;
 	}
+
 	this->print();
 }
 
@@ -234,9 +252,7 @@ void	Solve::to_match(void) {
 /*	for (std::vector<point>::iterator it=this->_points.begin() ; it != this->_points.end() ; it++) {
 		// std::cout << "value : " << it->value << ", x : " << it->x << ", y : " << it->y << ". Zero ? : " << it->zero << std::endl;
 	}*/
-}
 
-	this->_solution = puzzle;
 }
 
 void	Solve::print() {
