@@ -24,8 +24,10 @@ struct node {
 	int					g_score;
 	int					f_score;
 };
-//degager la list pour la remplacer par l'openlist
-//ajouter les possibilites tour par tour
+
+// ajouter les possibilites a chaque tour
+// condition match node mal placee
+
 class Solve
 {
 public:
@@ -39,7 +41,7 @@ private:
 	std::vector<int>				_puzzle;
 	std::vector<point>				_solution;
 	std::vector<point>				_points;
-	std::vector<node>				_list;
+	// std::vector<node>				_list;
 	std::vector<node>				_open_set;
 	std::vector<node>				_closed_set;
 	std::vector<node>				_total_path;
@@ -56,6 +58,8 @@ private:
 	void					print();
 	int						Compare2nodes(node n1, node n2);
 	void					tesssst();
+	void					used_node(size_t current_node);
+	bool					match_nodes(node n);
 };
 
 #endif
