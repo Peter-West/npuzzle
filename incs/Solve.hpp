@@ -5,6 +5,7 @@
 # include <vector>
 # include <map>
 # include <algorithm>
+# include <set>
 # include "Astar.hpp"
 
 
@@ -19,7 +20,6 @@ struct point {
 struct node {
 	std::vector<point>	map;
 	struct node			*parent;
-	int					cost;
 	int					h_cost;
 	int					g_score;
 	int					f_score;
@@ -41,8 +41,8 @@ private:
 	std::vector<int>				_puzzle;
 	std::vector<point>				_solution;
 	std::vector<point>				_points;
-	// std::vector<node>				_list;
-	std::vector<node>				_open_set;
+	std::set<node, bool(*)(node,node)>	_open_set;
+	// std::vector<node>				_open_set;
 	std::vector<node>				_closed_set;
 	std::vector<node>				_total_path;
 	int								_size;
@@ -59,7 +59,8 @@ private:
 	int						Compare2nodes(node n1, node n2);
 	void					tesssst();
 	void					used_node(size_t current_node);
-	bool					match_nodes(node n);
+	bool					match_nodes(std::vector<point> m);
+	bool					fncomp(node n1, node n2);
 };
 
 #endif
