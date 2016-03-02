@@ -6,6 +6,7 @@
 # include <map>
 # include <algorithm>
 # include <set>
+# include <iterator>
 # include "Astar.hpp"
 
 
@@ -25,8 +26,6 @@ struct node {
 	int					f_score;
 };
 
-// ajouter les possibilites a chaque tour
-// condition match node mal placee
 
 class Solve
 {
@@ -41,6 +40,8 @@ private:
 	std::vector<int>				_puzzle;
 	std::vector<point>				_solution;
 	std::vector<point>				_points;
+	// bool(*fn_ptr)(node, node) = fncomp;
+	
 	std::set<node, bool(*)(node,node)>	_open_set;
 	// std::vector<node>				_open_set;
 	std::vector<node>				_closed_set;
@@ -51,14 +52,14 @@ private:
 	void					test();
 	void					to_match();
 	void					fill_vec_points();
-	void					count_poss(point zero, int point_zero, int current_node);
+	void					count_poss(point zero, int point_zero);
 	void					move_empty_point();
 	int						heuristic_manhattan_distance(node n);
-	void					add_map_and_swap(int xm, int ym, int i0, int current_node, int g_count);
+	void					add_map_and_swap(int xm, int ym, int i0, int g_count);
 	void					print();
 	int						Compare2nodes(node n1, node n2);
 	void					tesssst();
-	void					used_node(size_t current_node);
+	void					used_node();
 	bool					match_nodes(std::vector<point> m);
 	bool					fncomp(node n1, node n2);
 };
