@@ -3,15 +3,12 @@
 #include <stdio.h>
 #include <unistd.h>
 
-Solve::Solve() {
-
-}
-
 Solve::Solve(std::vector<int> puzzle, int size) : _puzzle(puzzle), _size(size) {
-	bool(Solve::*fn_ptr)(node, node);
-	fn_ptr = &Solve::fncomp;
-	// std::set<node, bool(*)(node,node)> s = std::set(fn_ptr);
-	this->_open_set(fn_ptr);
+	// bool(Solve::*fn_ptr)(node, node);
+	// fn_ptr = &Solve::fncomp;
+	// this->_open_set(fn_ptr);
+	
+
 	// this->test();
 	this->to_match();
 	this->fill_vec_points();
@@ -41,9 +38,7 @@ int		Solve::get_position(int x, int y) {
 		return (-1);
 }
 
-bool	Solve::fncomp(node n1, node n2) {
-	return n1.f_score < n2.f_score;
-}
+
 
 bool	Solve::match_nodes(std::vector<point> m) {
 	size_t		count_node = 0;
@@ -342,7 +337,7 @@ void	Solve::to_match(void) {
 void	Solve::print() {
 	// int		i;
 	// int		j;
-	node	*p;
+	// node	*p;
 	char	Array[this->_size][this->_size];
 
 
@@ -350,12 +345,19 @@ void	Solve::print() {
 	std::cout << "_open_set.size : " << this->_open_set.size() << std::endl;
 
 
-	p=this->_open_set.get_allocator().allocate(this->_size * this->_size);
-	for (int k = 0; k < this->_size * this->_size; k++) {
-		for (std::vector<point>::iterator iit = p[k].map.begin(); iit != p[k].map.end() ; iit++) {
+	// p=this->_open_set.get_allocator().allocate(this->_size * this->_size);
+
+
+	// for (int k = 0; k < this->_size * this->_size; k++) {
+	for (std::set<node, ptr_cmp>::iterator it = _open_set.begin(); it != _open_set.end() ; it++) {
+		/*for ( std::vector<point>::iterator iit = it->map.begin(); iit != it->map.end() ; iit++) {
 			Array[iit->y][iit->x] = iit->value;
-			
+		}*/
+
+		for (size_t i = 0; i < it->map.size() ; i++) {
+			Array[it->map[i].y][it->map[i].x] = it->map[i].value;
 		}
+
 		std::cout << "**************" << std::endl;
 		for (int i = 0 ; i < this->_size ; i++) {
 			for (int j = 0 ; j < this->_size ; j++) {

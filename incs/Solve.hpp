@@ -26,12 +26,18 @@ struct node {
 	int					f_score;
 };
 
+struct ptr_cmp {
+	bool	operator()(node n1, node n2) {
+	return n1.f_score < n2.f_score;
+}
+};
+
 
 class Solve
 {
 public:
 	Solve(std::vector<int> puzzle, int size);
-	Solve();
+	Solve() = delete;
 	Solve(Solve const & src);
 	~Solve();
 	Solve &operator=(Solve const & rhs);
@@ -40,13 +46,15 @@ private:
 	std::vector<int>				_puzzle;
 	std::vector<point>				_solution;
 	std::vector<point>				_points;
-	// bool(*fn_ptr)(node, node) = fncomp;
-	
-	std::set<node, bool(*)(node,node)>	_open_set;
-	// std::vector<node>				_open_set;
-	std::vector<node>				_closed_set;
-	std::vector<node>				_total_path;
-	int								_size;
+
+	// bool(Solve::*fn_ptr)(node, node) = &Solve::fncomp;
+	// bool(*Solve::fn_ptr)(node, node) = &Solve::fncomp;
+
+	// std::set<node, bool(*)(node,node)>	_open_set;
+	std::set<node, ptr_cmp>				_open_set;
+	std::vector<node>					_closed_set;
+	std::vector<node>					_total_path;
+	int									_size;
 
 	int						get_position(int x, int y);
 	void					test();
@@ -61,7 +69,7 @@ private:
 	void					tesssst();
 	void					used_node();
 	bool					match_nodes(std::vector<point> m);
-	bool					fncomp(node n1, node n2);
+	// bool					fncomp(node n1, node n2);
 };
 
 #endif
