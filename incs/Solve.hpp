@@ -28,8 +28,9 @@ struct node {
 
 struct ptr_cmp {
 	bool	operator()(node n1, node n2) {
-	return n1.f_score < n2.f_score;
-}
+		// printf("n1.f_score : %d, n2.f_score : %d\n", n1.f_score, n2.f_score);
+		return n1.h_cost <= n2.h_cost;
+	}
 };
 
 
@@ -43,21 +44,15 @@ public:
 	Solve &operator=(Solve const & rhs);
 
 private:
-	std::vector<int>				_puzzle;
-	std::vector<point>				_solution;
-	std::vector<point>				_points;
-
-	// bool(Solve::*fn_ptr)(node, node) = &Solve::fncomp;
-	// bool(*Solve::fn_ptr)(node, node) = &Solve::fncomp;
-
-	// std::set<node, bool(*)(node,node)>	_open_set;
+	std::vector<int>					_puzzle;
+	std::vector<point>					_solution;
+	std::vector<point>					_points;
 	std::set<node, ptr_cmp>				_open_set;
 	std::vector<node>					_closed_set;
 	std::vector<node>					_total_path;
 	int									_size;
 
 	int						get_position(int x, int y);
-	void					test();
 	void					to_match();
 	void					fill_vec_points();
 	void					count_poss(point zero, int point_zero);
@@ -67,9 +62,10 @@ private:
 	void					print();
 	int						Compare2nodes(node n1, node n2);
 	void					tesssst();
-	void					used_node();
-	bool					match_nodes(std::vector<point> m);
-	// bool					fncomp(node n1, node n2);
+	void					used_node(std::set<node, ptr_cmp>::iterator it);
+	bool					match_closed_nodes(std::vector<point> m);
+	bool					match_open_nodes(std::vector<point> m);
+	bool					goal_reached(std::vector<point> m);
 };
 
 #endif
