@@ -153,6 +153,10 @@ bool	Solve::goal_reached(std::vector<point> m) {
 	return (true);
 }
 
+int		Solve::linear_conflict(node n) {
+	
+}
+
 int		Solve::misplaced_tiles(node n) {
 	int res = 0;
 

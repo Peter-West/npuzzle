@@ -7,6 +7,11 @@
 
 bool	is_digits(const std::string &str);
 
+void	ft_usage() {
+		std::cout << "Usage : ./npuzzle [-heuristic] [file]" << std::endl;
+		std::cout << "heuristic : \n\t-md = manhattan distance \n\t-mt = misplaced tiles" << std::endl;
+}
+
 int		main(int argc, char **argv) {
 	/*if (argc == 3) {
 		Gen			*g;
@@ -33,6 +38,10 @@ if (argc == 3) {
 		h = md;
 	else if (strcmp(argv[1], "-mt") == 0)
 		h = mt;
+	else {
+		ft_usage();
+		exit(0);
+	}
 	printf("heuristic choisi : %d\n", h);
 	try {
 		p = new Parser(argv[2]);
@@ -46,8 +55,7 @@ if (argc == 3) {
 	}
 }
 else {
-	std::cout << "Usage : ./npuzzle [-heuristic] [file]" << std::endl;
-	std::cout << "heuristic : \n\t-md = manhattan distance \n\t-mt = misplaced tiles" << std::endl;
+	ft_usage();
 }
 return (0);
 }
