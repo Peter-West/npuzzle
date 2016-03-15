@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <unistd.h>
 
-Solve::Solve(std::vector<int> puzzle, int size) : _puzzle(puzzle), _size(size) {
+Solve::Solve(std::vector<int> puzzle, int size, heuristic h) : _puzzle(puzzle), _size(size), _h(h) {
 	// bool(Solve::*fn_ptr)(node, node);
 	// fn_ptr = &Solve::fncomp;
 	// this->_open_set(fn_ptr);
@@ -61,10 +61,18 @@ bool	Solve::match_closed_nodes(std::vector<point> m) {
 					// printf("TRUE at : %zu\n", count_node);
 					node tmp_node;
 					tmp_node.map = m;
-					if (this->heuristic_manhattan_distance(*it) > this->heuristic_manhattan_distance(tmp_node))
-						return (false);
-					else
-						return (true);
+					if (this->_h == md) {
+						if (this->heuristic_manhattan_distance(*it) > this->heuristic_manhattan_distance(tmp_node))
+							return (false);
+						else
+							return (true);
+					}
+					else if (this->_h == mt) {
+						if (this->misplaced_tiles(*it) > this->misplaced_tiles(tmp_node))
+							return (false);
+						else
+							return (true);
+					}
 				}
 				count_point++;
 
@@ -96,10 +104,18 @@ bool	Solve::match_open_nodes(std::vector<point> m) {
 					// printf("TRUE at : %zu\n", count_node);
 					node tmp_node;
 					tmp_node.map = m;
-					if (this->heuristic_manhattan_distance(*it) > this->heuristic_manhattan_distance(tmp_node))
-						return (false);
-					else
-						return (true);
+					if (this->_h == md) {
+						if (this->heuristic_manhattan_distance(*it) > this->heuristic_manhattan_distance(tmp_node))
+							return (false);
+						else
+							return (true);
+					}
+					else if (this->_h == mt) {
+						if (this->misplaced_tiles(*it) > this->misplaced_tiles(tmp_node))
+							return (false);
+						else
+							return (true);
+					}
 				}
 				count_point++;
 
@@ -135,6 +151,21 @@ bool	Solve::goal_reached(std::vector<point> m) {
 		}
 	}
 	return (true);
+}
+
+int		Solve::misplaced_tiles(node n) {
+	int res = 0;
+
+	for (size_t i = 0; i < n.map.size() ; i++) {
+		for (size_t j = 0; j < this->_solution.size() ; j++) {
+			if (n.map[i].value == this->_solution[j].value) {
+				if (n.map[i].x != this->_solution[j].x || n.map[i].y != this->_solution[j].y) {
+					res++;
+				}
+			}
+		}
+	}
+	return (res);
 }
 
 int		Solve::heuristic_manhattan_distance(node n) {
@@ -180,7 +211,11 @@ void	Solve::add_map_and_swap(int xm, int ym, int i0, int g_count) {
 				node_tmp.map = tmp_map;
 				node_tmp.parent = &best;
 				node_tmp.g_score = g_count;
-				node_tmp.h_cost = this->heuristic_manhattan_distance(node_tmp);
+				if (this->_h == md)
+					node_tmp.h_cost = this->heuristic_manhattan_distance(node_tmp);
+				else if (this->_h == mt)
+					node_tmp.h_cost = this->misplaced_tiles(node_tmp);
+				
 				node_tmp.f_score = g_count + node_tmp.h_cost;
 				// printf("node ptr : %p\n", &node_tmp);
 				// printf("open_set ptr : %p\n", &this->_open_set);

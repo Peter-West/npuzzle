@@ -15,7 +15,7 @@ SRCS				:= main.cpp Parser.cpp Solve.cpp Gen.cpp
 PATH_OBJ			:= objs
 PATH_SRC			:= srcs
 PATH_INC			:= incs
-CXX					:= clang++-3.5
+CXX					:= clang++
 CXXFLAGS			:= -Wall -Wextra -Werror -std=c++11
 DEBUG				:= -g
 OBJECTS				:= $(patsubst %.cpp, $(PATH_OBJ)/%.o, $(SRCS))
