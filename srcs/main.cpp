@@ -9,7 +9,7 @@ bool	is_digits(const std::string &str);
 
 void	ft_usage() {
 		std::cout << "Usage : ./npuzzle [-heuristic] [file]" << std::endl;
-		std::cout << "heuristic : \n\t-md = manhattan distance \n\t-mt = misplaced tiles" << std::endl;
+		std::cout << "heuristic : \n\t-md = manhattan distance \n\t-mt = misplaced tiles\n\t-to = tiles out of place" << std::endl;
 }
 
 int		main(int argc, char **argv) {
@@ -38,6 +38,8 @@ if (argc == 3) {
 		h = md;
 	else if (strcmp(argv[1], "-mt") == 0)
 		h = mt;
+	else if (strcmp(argv[1], "-to") == 0)
+		h = to;
 	else {
 		ft_usage();
 		exit(0);

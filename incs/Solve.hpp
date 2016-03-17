@@ -9,7 +9,7 @@
 # include <iterator>
 # include "Astar.hpp"
 
-enum heuristic { md, mt };
+enum heuristic { md, mt, to };
 
 struct point {
 	int		value;
@@ -28,9 +28,11 @@ struct node {
 };
 
 struct ptr_cmp {
-	bool	operator()(node n1, node n2) {
+	bool	operator()(node *n1, node *n2) {
 		// printf("n1.f_score : %d, n2.f_score : %d\n", n1.f_score, n2.f_score);
-		return n1.h_cost <= n2.h_cost;
+		// printf("n1.h_cost : %d, n2.h_cost : %d\n", n1.h_cost, n2.h_cost);
+		return n1->h_cost <= n2->h_cost;
+		// return n1.f_score <= n2.f_score;
 	}
 };
 
@@ -48,9 +50,9 @@ private:
 	std::vector<int>					_puzzle;
 	std::vector<point>					_solution;
 	std::vector<point>					_points;
-	std::set<node, ptr_cmp>				_open_set;
-	std::vector<node>					_closed_set;
-	std::vector<node>					_total_path;
+	std::set<node*, ptr_cmp>			_open_set;
+	std::vector<node*>					_closed_set;
+	std::vector<node*>					_final_path;
 	int									_size;
 	heuristic							_h;
 
@@ -59,16 +61,19 @@ private:
 	void					fill_vec_points();
 	void					count_poss(point zero, int point_zero);
 	void					move_empty_point();
-	int						heuristic_manhattan_distance(node n);
 	void					add_map_and_swap(int xm, int ym, int i0, int g_count);
 	void					print();
-	int						Compare2nodes(node n1, node n2);
+	void					print_final_path();
+	void					reverse_path(std::set<node*, ptr_cmp>::iterator it);
+	// int						Compare2nodes(node *n1, node n2);
 	void					tesssst();
-	void					used_node(std::set<node, ptr_cmp>::iterator it);
+	void					used_node(std::set<node*, ptr_cmp>::iterator it);
 	bool					match_closed_nodes(std::vector<point> m);
 	bool					match_open_nodes(std::vector<point> m);
 	bool					goal_reached(std::vector<point> m);
-	int						misplaced_tiles(node n);
+	int						heuristic_manhattan_distance(node *n);
+	int						misplaced_tiles(node *n);
+	int						tiles_out_of_place(node *n);
 };
 
 #endif
