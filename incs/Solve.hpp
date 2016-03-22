@@ -29,10 +29,7 @@ struct node {
 
 struct ptr_cmp {
 	bool	operator()(node *n1, node *n2) {
-		// printf("n1.f_score : %d, n2.f_score : %d\n", n1.f_score, n2.f_score);
-		// printf("n1.h_cost : %d, n2.h_cost : %d\n", n1.h_cost, n2.h_cost);
 		return n1->h_cost <= n2->h_cost;
-		// return n1.f_score <= n2.f_score;
 	}
 };
 
@@ -65,7 +62,6 @@ private:
 	void					print();
 	void					print_final_path();
 	void					reverse_path(std::set<node*, ptr_cmp>::iterator it);
-	// int						Compare2nodes(node *n1, node n2);
 	void					tesssst();
 	void					used_node(std::set<node*, ptr_cmp>::iterator it);
 	bool					match_closed_nodes(std::vector<point> m);
@@ -74,6 +70,7 @@ private:
 	int						heuristic_manhattan_distance(node *n);
 	int						misplaced_tiles(node *n);
 	int						tiles_out_of_place(node *n);
+	void					clean();
 };
 
 #endif

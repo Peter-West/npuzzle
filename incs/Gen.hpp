@@ -16,9 +16,12 @@ public:
 	Gen(int size);
 	
 	std::vector<int>	puzzle;
+	int					count_inv;
+	bool				solvable;
 
 private:
 	int					_size;
+	bool				count_inversions();
 	void				generate();
 	void				pour_faire_plaisir_a_manu();
 	std::string			manu_me_casse_les_couilles(int m);

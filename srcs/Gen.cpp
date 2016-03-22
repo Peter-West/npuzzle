@@ -18,9 +18,12 @@ Gen &Gen::operator=(Gen const & rhs) {
 }
 
 Gen::Gen(int size) : _size(size) {
-	generate();
+	this->generate();
 	std::cout << "taille : " << this->_size << std::endl;
-	pour_faire_plaisir_a_manu();
+	this->pour_faire_plaisir_a_manu();
+	while (!this->count_inversions()) {
+		this->generate();
+	}
 }
 
 void	Gen::generate() {
@@ -28,6 +31,7 @@ void	Gen::generate() {
 	int		tmp;
 	bool	available;
 
+	this->puzzle.clear();
 	srand (time(NULL));
 	while (static_cast<int>(puzzle.size()) != limit) {
 		available = true;
@@ -42,6 +46,25 @@ void	Gen::generate() {
 			puzzle.push_back(tmp);
 		}
 	}
+}
+
+bool				Gen::count_inversions() {
+	int			count = 0;
+
+	for (size_t i = 0 ; i < this->puzzle.size(); i++) {
+		for (size_t j = i ; j < this->puzzle.size(); j++) {
+			if (this->puzzle[i] != 0 && this->puzzle[j] != 0 && this->puzzle[i] > this->puzzle[j])
+				count++;
+		}
+	}
+	printf("count inv : %d\n", count);
+	this->count_inv = count;
+	if (this->_size % 2 == 0 && count % 2 == 0)
+		return (true);
+	if (this->_size % 2 != 0 && count % 2 != 0)
+		return (true);
+	else
+		return (false);
 }
 
 std::string		Gen::manu_me_casse_les_couilles(int m) {

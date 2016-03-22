@@ -4,16 +4,9 @@
 #include <unistd.h>
 
 Solve::Solve(std::vector<int> puzzle, int size, heuristic h) : _puzzle(puzzle), _size(size), _h(h) {
-	// bool(Solve::*fn_ptr)(node, node);
-	// fn_ptr = &Solve::fncomp;
-	// this->_open_set(fn_ptr);
-	
-
-	// this->test();
 	this->to_match();
 	this->fill_vec_points();
 	this->move_empty_point();
-	// this->tesssst();
 }
 
 Solve::Solve(Solve const & src) {
@@ -44,14 +37,11 @@ bool	Solve::match_closed_nodes(std::vector<point> m) {
 	size_t		count_node = 0;
 	size_t		count_point;
 
-	// printf("SIZE CLOSED SET : %zu\n", this->_closed_set.size());
 	if (!this->_closed_set.empty()) {
 		for (std::vector<node*>::iterator it = this->_closed_set.begin() ; it != this->_closed_set.end() ; it++) {
 			count_point = 0;
 			std::vector<point>::iterator iit = m.begin();
-			// for (std::vector<point>::iterator p = it->map.begin(); p != it->map.end() ; p++) {
 			for (size_t p = 0; p != (*it)->map.size() ; p++) {
-				// std::cout << "ICIIII : " << p->value << std::endl;
 				if ((*it)->map[p].value == iit->value && (*it)->map[p].x == iit->x && (*it)->map[p].y == iit->y) {
 					iit++;
 				}
@@ -59,7 +49,6 @@ bool	Solve::match_closed_nodes(std::vector<point> m) {
 					break ;
 				}
 				if (count_point == m.size() - 1) {
-					// printf("TRUE at : %zu\n", count_node);
 					node *tmp_node = new node;
 					tmp_node->map = m;
 					if (this->_h == md) {
@@ -99,7 +88,6 @@ bool	Solve::match_open_nodes(std::vector<point> m) {
 			count_point = 0;
 			std::vector<point>::iterator iit = m.begin();
 			for (size_t i = 0; i < (*it)->map.size() ; i++) {
-				// std::cout << "ICIIII : " << p->value << std::endl;
 				if ((*it)->map[i].value == iit->value && (*it)->map[i].x == iit->x && (*it)->map[i].y == iit->y) {
 					iit++;
 				}
@@ -107,7 +95,6 @@ bool	Solve::match_open_nodes(std::vector<point> m) {
 					break ;
 				}
 				if (count_point == m.size() - 1) {
-					// printf("TRUE at : %zu\n", count_node);
 					node *tmp_node = new node;
 					tmp_node->map = m;
 					if (this->_h == md) {
@@ -117,7 +104,7 @@ bool	Solve::match_open_nodes(std::vector<point> m) {
 							return (true);
 					}
 					else if (this->_h == mt) {
-						if (this->misplaced_tiles(*it) > this->misplaced_tiles(tmp_node))
+						if (this->misplaced_tiles(*it) >= this->misplaced_tiles(tmp_node))
 							return (false);
 						else
 							return (true);
@@ -212,25 +199,21 @@ int		Solve::heuristic_manhattan_distance(node *n) {
 void	Solve::add_map_and_swap(int xm, int ym, int i0, int g_count) {
 	int					current_point = 0;
 	std::vector<point>	tmp_map;
-	node	*best = new node;
 
-	best = *this->_open_set.begin();
+	node	*best = *this->_open_set.begin();
 	std::vector<point>::iterator it;
 	for (it = best->map.begin() ; it != best->map.end() ; it++) {
-		
 		if (it->x == xm && it->y == ym) {
 			tmp_map.resize(this->_size*this->_size);
 			
 			std::copy(best->map.begin(), best->map.end(), tmp_map.begin());
 			std::swap(tmp_map[i0].x, tmp_map[current_point].x);
 			std::swap(tmp_map[i0].y, tmp_map[current_point].y);
-			
-			if (!this->match_closed_nodes(tmp_map) && !this->match_open_nodes(tmp_map)) {
-				/** SET MODE **/
+			if (!this->match_closed_nodes(tmp_map) && !this->match_open_nodes(tmp_map) && g_count > best->g_score) {
+
 				node	*node_tmp = new node;
 				node_tmp->map = tmp_map;
 				node_tmp->parent = best;
-				node_tmp->g_score = g_count;
 				if (this->_h == md)
 					node_tmp->h_cost = this->heuristic_manhattan_distance(node_tmp);
 				else if (this->_h == mt)
@@ -238,37 +221,46 @@ void	Solve::add_map_and_swap(int xm, int ym, int i0, int g_count) {
 				else if (this->_h == to)
 					node_tmp->h_cost = this->tiles_out_of_place(node_tmp);
 				
+				node_tmp->g_score = g_count;
 				node_tmp->f_score = g_count + node_tmp->h_cost;
-				// printf("node ptr : %p\n", &node_tmp);
-				// printf("open_set ptr : %p\n", &this->_open_set);
-				// printf("open set 0 size : %zu\n", _open_set.size());
+				
 				this->_open_set.insert(node_tmp);
-				// printf("open set 1 size : %zu\n", _open_set.size());
+				// if (this->_open_set.insert(node_tmp).second)
+				// 	printf("insert fail !\n");
 			}
+			return ;
 		}
 		current_point++;
 	}
 }
 
 void	Solve::count_poss(point zero, int point_zero) {
-	static int				g_count = 0;
+	static int				g_count = 1;
+	int						count = 0;
+
 	std::vector<point>		tmp;
 
 	if ((zero.x - 1) > -1) {
+		count++;
 		add_map_and_swap(zero.x - 1, zero.y, point_zero, g_count);
 	}
 
 	if ((zero.x + 1) < this->_size){
+		count++;
 		add_map_and_swap(zero.x + 1, zero.y, point_zero, g_count);
 	}
 	
 	if ((zero.y - 1) > -1) {
+		count++;
 		add_map_and_swap(zero.x, zero.y - 1, point_zero, g_count);
 	}
 	
 	if ((zero.y + 1) < this->_size) {
+		count++;
 		add_map_and_swap(zero.x, zero.y + 1, point_zero, g_count);
 	}
+	// this->print();
+	// printf("count pos : %d\n", count);
 	g_count++;
 }
 
@@ -279,24 +271,15 @@ void	Solve::used_node(std::set<node*, ptr_cmp>::iterator it) {
 	tmp_node->map = (*it)->map;
 	this->_closed_set.push_back(tmp_node);
 	this->_open_set.erase(it);
-	
-	// if (tmp_node->parent) {
-		// printf("tmp_node parent g_score : %d\n", tmp_node->parent->g_score);
-		// printf("tmp_node parent g_score : %\n", tmp_node.parent->g_score);
-	// }
 }
 
 void	Solve::reverse_path(std::set<node*, ptr_cmp>::iterator it) {
 	node	*wanderer;
 
 	wanderer = *it;
-	while (wanderer->parent != NULL) {
-		// printf("wanderer ptr : %p\n", wanderer);
-		// printf("wanderer parent ptr : %p\n", wanderer->parent);
-		// printf("wanderer->map.size() : %d\n", wanderer->map[1].value);
+	while (wanderer != NULL) {
 		this->_final_path.insert(this->_final_path.begin(), wanderer);
 		wanderer = wanderer->parent;
-
 	}
 }
 
@@ -307,6 +290,8 @@ void	Solve::move_empty_point() {
 
 	n_start->map.resize(this->_size*this->_size);
 	n_start->parent = NULL;
+	n_start->g_score = 0;
+	// n_start->h_count = 0;
 	std::copy(this->_points.begin(), this->_points.end(), n_start->map.begin());
 
 	this->_open_set.insert(n_start);
@@ -320,9 +305,10 @@ void	Solve::move_empty_point() {
 	while (!this->_open_set.empty()) {
 		if (this->goal_reached((*this->_open_set.begin())->map)) {
 			std::cout << "current_node : " << current_node << std::endl;
-			// std::cout << "VICTORY !!" << std::endl;
+			std::cout << "VICTORY !!" << std::endl;
 			this->reverse_path(this->_open_set.begin());
 			// this->print_final_path();
+			this->clean();
 			break ;
 		}
 		if (current_node > 0) {
@@ -330,17 +316,17 @@ void	Solve::move_empty_point() {
 				std::cout << "current_node : " << current_node << std::endl;
 			std::set<node*, ptr_cmp>::iterator it = this->_open_set.begin();
 			this->count_poss((*this->_open_set.begin())->map[point_zero], point_zero);			
-			this->print();
 			this->used_node(it);
-			sleep(1);
+			// this->print();
+			// sleep(1);
 		}
 		else {
-			
 			this->count_poss((*this->_open_set.begin())->map[point_zero], point_zero);
 		}
 		current_node++;
 	}
-	printf("Waoh !!!!!\n");
+	printf("last node : %zu\n", current_node);
+	printf("Echec !!!!!\n");
 }
 
 void	Solve::to_match(void) {
@@ -391,13 +377,17 @@ void	Solve::to_match(void) {
 void	Solve::print_final_path() {
 	char	Array[this->_size][this->_size];
 	
-	printf("Size dans final print : %zu\n", this->_final_path.size());
+	std::cout << "Total number of states : " << this->_open_set.size() + this->_closed_set.size() << std::endl;
+	std::cout << "Number of moves required to reach the solution : " << this->_final_path.size() << std::endl;
 	for (size_t i = 0; i < this->_final_path.size(); i++) {
 		for (size_t j = 0; j < this->_final_path[i]->map.size(); j++) {
 			Array[this->_final_path[i]->map[j].y][this->_final_path[i]->map[j].x] = this->_final_path[i]->map[j].value;
 		}
 		std::cout << "******" << std::endl;
 		printf("current ptr : %p\n", this->_final_path[i]);
+		printf("g score : %d\n", this->_final_path[i]->g_score);
+		printf("h cost : %d\n", this->_final_path[i]->h_cost);
+		printf("f score : %d\n", this->_final_path[i]->f_score);
 		printf("parent ptr : %p\n", this->_final_path[i]->parent);
 		for (int i = 0 ; i < this->_size ; i++) {
 			for (int j = 0 ; j < this->_size ; j++) {
@@ -409,15 +399,26 @@ void	Solve::print_final_path() {
 	}
 }
 
+void	Solve::clean() {
+	for (std::set<node*, ptr_cmp>::iterator it = this->_open_set.begin() ; it != this->_open_set.end() ; it++) {
+		delete (*it);
+	}
+	for (std::vector<node*>::iterator it = this->_closed_set.begin() ; it != this->_closed_set.end() ; it++) {
+		delete (*it);
+	}
+}
+
 void	Solve::print() {
 	char	Array[this->_size][this->_size];
 	int		count = 0;
 
+	std::cout << std::endl << std::endl << "**** START ****" << std::endl;
+	printf("open set size : %zu\n", _open_set.size());
 	for (std::set<node*, ptr_cmp>::iterator it = _open_set.begin(); it != _open_set.end() ; it++) {
 		
-		if ((*it)->h_cost < 101) {
-			std::cout << std::endl << std::endl << "**** START ****" << std::endl;
-			std::cout << "Position in set : " << count << std::endl;
+		// if ((*it)->h_cost < 101) {
+			
+			std::cout << "\nPosition in set : " << count << std::endl;
 			std::cout << "F score : " << (*it)->f_score << std::endl;
 			std::cout << "G score : " << (*it)->g_score << std::endl;
 			std::cout << "H cost : " << (*it)->h_cost << std::endl;
@@ -433,9 +434,9 @@ void	Solve::print() {
 				std::cout << std::endl;
 			}
 			std::cout << "**************" << std::endl;
-		}
+		// }
 		count++;
 	}
-	// std::cout << std::endl << "**** END ****" << std::endl;
-	// std::cout << std::endl;
+	std::cout << std::endl << "**** END ****" << std::endl;
+	std::cout << std::endl;
 }
