@@ -17,14 +17,17 @@ public:
 	
 	std::vector<int>	puzzle;
 	int					count_inv;
-	bool				solvable;
 
 private:
+	std::vector<int>	_goal;
 	int					_size;
-	bool				count_inversions();
+
+	bool				isSolvable();
+	void				to_match(void);
+	int					count_inversions(std::vector<int> puzz);
 	void				generate();
 	void				pour_faire_plaisir_a_manu();
-	std::string			manu_me_casse_les_couilles(int m);
+	int					pos_zero(std::vector<int> v);
 };
 
 #endif

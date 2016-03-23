@@ -1,17 +1,11 @@
 #include "Parser.hpp"
 #include "Solve.hpp"
 #include "Gen.hpp"
+#include "Options.hpp"
 #include <iostream>
 #include <exception>
 #include <string.h>
 
-bool	is_digits(const std::string &str);
-
-void	ft_usage() {
-		std::cout << "Usage : ./npuzzle [-gen] [heuristic] [file]" << std::endl;
-		std::cout << "Usage : ./npuzzle [heuristic] [file]" << std::endl;
-		std::cout << "heuristic : \n\t-md = manhattan distance \n\t-mt = misplaced tiles\n\t-to = tiles out of place" << std::endl;
-}
 
 int		main(int argc, char **argv) {
 	/*if (argc == 3) {
@@ -30,7 +24,16 @@ int		main(int argc, char **argv) {
 		}
 	} */
 
-	if (argc == 4) {
+	Options o(argc, argv);
+
+	if (o.generate_random_start) {
+		Gen			*g;
+		Solve		*s;
+		s = new Solve(g->puzzle, o.size, h);
+
+	}
+
+/*	if (argc == 4) {
 		Gen			*g;
 		Solve		*s;
 		heuristic	h = md;
@@ -84,10 +87,7 @@ int		main(int argc, char **argv) {
 	}
 	else {
 		ft_usage();
-	}
+	}*/
 	return (0);
 }
 
-bool	is_digits(const std::string &str) {
-	return str.find_first_not_of("0123456789") == std::string::npos;
-}

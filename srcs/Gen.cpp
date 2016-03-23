@@ -21,9 +21,13 @@ Gen::Gen(int size) : _size(size) {
 	this->generate();
 	std::cout << "taille : " << this->_size << std::endl;
 	this->pour_faire_plaisir_a_manu();
-	while (!this->count_inversions()) {
-		this->generate();
-	}
+	this->to_match();
+	
+	if (this->isSolvable())
+		printf("Solvable\n");
+	else
+		printf("Unsolvable\n");
+
 }
 
 void	Gen::generate() {
@@ -48,45 +52,81 @@ void	Gen::generate() {
 	}
 }
 
-bool				Gen::count_inversions() {
+int				Gen::pos_zero(std::vector<int> v) {
+	size_t		i; 
+
+	for (i = 0; i < v.size() ; i++) {
+		if (v[i] == 0)
+			break;
+	}
+	return (i);
+}
+
+// Returns true if `start` belongs to the same permutation group as `goal`
+// template <uint size>
+bool			Gen::isSolvable() {
+    int startInversions = count_inversions(this->puzzle);
+    int goalInversions = count_inversions(this->_goal);
+
+    if (this->_size % 2 == 0) { // In this case, the row of the '0' tile matters
+
+	    startInversions += this->pos_zero(this->puzzle) / this->_size;
+        goalInversions += this->pos_zero(this->_goal) / this->_size;
+    }
+
+    return (startInversions % 2 == goalInversions % 2);
+}
+
+int				Gen::count_inversions(std::vector<int> puzz) {
 	int			count = 0;
 
-	for (size_t i = 0 ; i < this->puzzle.size(); i++) {
-		for (size_t j = i ; j < this->puzzle.size(); j++) {
-			if (this->puzzle[i] != 0 && this->puzzle[j] != 0 && this->puzzle[i] > this->puzzle[j])
+	for (size_t i = 0 ; i < puzz.size(); i++) {
+		for (size_t j = i ; j < puzz.size(); j++) {
+			if (puzz[i] != 0 && puzz[j] != 0 && puzz[i] > puzz[j])
 				count++;
 		}
 	}
 	printf("count inv : %d\n", count);
-	this->count_inv = count;
+	return (count);
+	/*this->count_inv = count;
 	if (this->_size % 2 == 0 && count % 2 == 0)
 		return (true);
 	if (this->_size % 2 != 0 && count % 2 != 0)
 		return (true);
 	else
-		return (false);
+		return (false);*/
 }
 
-std::string		Gen::manu_me_casse_les_couilles(int m) {
-	std::string	 pfff;
-	int		lmt = this->_size * this->_size;
-	int		count_m = 0;
+void			Gen::to_match(void) {
+	int					total_size = this->_size * this->_size;
+	std::vector<int>	puzzle(total_size, -1);
+	int					current = 1;
+	int					x = 0;
+	int					ix = 1;
+	int					y = 0;
+	int					iy = 0;
 
-	// std::cout << "m : " << m;
-	if (m == 0)
-		m = 1;
-	while (m < lmt) {
-		if ((m = m * 10) < lmt)
-			count_m++;
+	
+	while (1) {
+		puzzle[x + y * this->_size] = current;
+		if (current == 0)
+			break ;
+		current++;
+		if (x + ix == this->_size || x + ix < 0 || (ix != 0 && puzzle[x + ix + y * this->_size] != -1)) {
+			iy = ix;
+			ix = 0;
+		}
+		else if (y + iy == this->_size || y + iy < 0 || (iy != 0 && puzzle[x + (y + iy) * this->_size] != -1)) {
+			ix = -iy;
+			iy = 0;
+		}
+		x += ix;
+		y += iy;
+		if (current == total_size) {
+			current = 0;
+		}
 	}
-	// std::cout << " count_m : " << count_m << std::endl;
-	while (count_m > 0)
-	{
-		pfff += "0";
-		count_m--;
-	}
-	// std::cout << std::endl;
-	return pfff;
+	this->_goal = puzzle;
 }
 
 void			Gen::pour_faire_plaisir_a_manu() {
