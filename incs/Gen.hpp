@@ -13,7 +13,7 @@ public:
 	Gen(Gen const & src);
 	~Gen();
 	Gen &operator=(Gen const & rhs);
-	Gen(int size);
+	Gen(int size, bool unsolv);
 	
 	std::vector<int>	puzzle;
 	int					count_inv;
@@ -21,6 +21,7 @@ public:
 private:
 	std::vector<int>	_goal;
 	int					_size;
+	bool				_unsolv;
 
 	bool				isSolvable();
 	void				to_match(void);

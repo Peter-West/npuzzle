@@ -18,7 +18,8 @@ Solve::~Solve() {
 }
 
 Solve &Solve::operator=(Solve const & rhs) {
-	*this = rhs;
+	if (this != &rhs)
+		*this = rhs;
 	return (*this);
 }
 

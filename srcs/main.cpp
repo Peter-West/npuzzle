@@ -1,4 +1,4 @@
-#include "Parser.hpp"
+// #include "Parser.hpp"
 #include "Solve.hpp"
 #include "Gen.hpp"
 #include "Options.hpp"
@@ -8,6 +8,7 @@
 
 
 int		main(int argc, char **argv) {
+	Options o(argc, argv);
 	/*if (argc == 3) {
 		Gen			*g;
 		if (strcmp(argv[1],"-gen") == 0) {*/
@@ -24,14 +25,21 @@ int		main(int argc, char **argv) {
 		}
 	} */
 
-	Options o(argc, argv);
 
-	if (o.generate_random_start) {
+/*	if (o.generate_random_start) {
 		Gen			*g;
 		Solve		*s;
+		
+		g = new Gen(o.size, o.unsolvable);
 		s = new Solve(g->puzzle, o.size, h);
-
 	}
+	else {
+		Parser		*p;
+		Solve		*s;
+
+		p = new Parser(o.filename);
+		s = new Solve(g->puzzle, p.size, h);
+	}*/
 
 /*	if (argc == 4) {
 		Gen			*g;

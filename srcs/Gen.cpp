@@ -13,16 +13,20 @@ Gen::~Gen() {
 }
 
 Gen &Gen::operator=(Gen const & rhs) {
-	*this = rhs;
+	if (this != &rhs)
+		*this = rhs;
 	return (*this);
 }
 
-Gen::Gen(int size) : _size(size) {
+Gen::Gen(int size, bool unsolv) : _size(size), _unsolv(unsolv) {
 	this->generate();
 	std::cout << "taille : " << this->_size << std::endl;
 	this->pour_faire_plaisir_a_manu();
 	this->to_match();
 	
+	if (this->_unsolv) {
+		
+	}	
 	if (this->isSolvable())
 		printf("Solvable\n");
 	else

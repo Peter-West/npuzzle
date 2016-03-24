@@ -9,7 +9,7 @@
 # include <iterator>
 # include "Astar.hpp"
 
-// enum heuristic { md, mt, to };
+enum heuristic { md, mt, to };
 
 struct point {
 	int		value;

@@ -12,8 +12,9 @@ Parser::~Parser() {
 	std::cout << "Parser Destroyed" << std::endl;
 }
 
-Parser &Parser::operator=(Parser const &rhs) {
-	*this = rhs;
+Parser &Parser::operator=(Parser const & rhs) {
+	if (this != &rhs)
+		*this = rhs;
 	return (*this);
 }
 
