@@ -25,13 +25,15 @@ Gen::Gen(int size, bool unsolv) : _size(size), _unsolv(unsolv) {
 	this->to_match();
 	
 	if (this->_unsolv) {
-		
-	}	
-	if (this->isSolvable())
-		printf("Solvable\n");
-	else
-		printf("Unsolvable\n");
-
+		std::cout << "Puzzle is Unsolvable" <<std::endl;
+		while (this->isSolvable())
+			this->generate();
+	}
+	else {
+		std::cout << "Puzzle is Solvable" <<std::endl;
+		while (!this->isSolvable())
+			this->generate();
+	}
 }
 
 void	Gen::generate() {
@@ -72,6 +74,9 @@ bool			Gen::isSolvable() {
     int startInversions = count_inversions(this->puzzle);
     int goalInversions = count_inversions(this->_goal);
 
+    printf("startInversions : %d\n", startInversions);
+    printf("goalInversions : %d\n", goalInversions);
+
     if (this->_size % 2 == 0) { // In this case, the row of the '0' tile matters
 
 	    startInversions += this->pos_zero(this->puzzle) / this->_size;
@@ -90,15 +95,7 @@ int				Gen::count_inversions(std::vector<int> puzz) {
 				count++;
 		}
 	}
-	printf("count inv : %d\n", count);
 	return (count);
-	/*this->count_inv = count;
-	if (this->_size % 2 == 0 && count % 2 == 0)
-		return (true);
-	if (this->_size % 2 != 0 && count % 2 != 0)
-		return (true);
-	else
-		return (false);*/
 }
 
 void			Gen::to_match(void) {

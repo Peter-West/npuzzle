@@ -30,6 +30,7 @@ void	Options::usage() {
 	std::cout << "Usage : ./npuzzle [heuristic] [file]" << std::endl << std::endl;
 	std::cout << "options : \n\t-gen = generate de random puzzle(default is solvable)\n\t-uns = unsolvable random puzzle" << std::endl;
 	std::cout << "heuristic(only one) : \n\t-md = manhattan distance \n\t-mt = misplaced tiles\n\t-to = tiles out of place" << std::endl;
+	std::cout << "size must be superior to 2" << std::endl;
 	exit(EXIT_FAILURE);
 }
 
@@ -39,6 +40,9 @@ bool	Options::is_digits(const std::string &str) {
 
 void	Options::check_errors(int argc, char **argv) {
 	int		count = 0;
+
+	if (argc < 2)
+		this->usage();
 
 	for (int i = 0 ; i < argc ; i++) {
 		for (auto & ent : this->heuristic) {
@@ -63,12 +67,8 @@ void	Options::check_errors(int argc, char **argv) {
 		printf("filename %s\n", this->filename.c_str());
 	}
 	if (this->generate_random_start && count != argc - 2) {
-		printf("0\n");
 		this->usage();
 	}
-	/*else
-		printf("1\n");
-		this->usage();*/
 }
 
 void	Options::check_options_errors() {
@@ -81,12 +81,12 @@ void	Options::check_options_errors() {
 			}
 		}
 	}
-
 	int	count = 0;
 	for (auto & ent : this->heuristic) {
 		if (ent.second == true)
 			count++;
 	}
+	
 	if (count > 1) {
 		this->usage();
 	}
@@ -94,25 +94,30 @@ void	Options::check_options_errors() {
 
 void	Options::get_size(char *size) {
 	if (this->options.find("-gen")->second == true) {
-		if (this->is_digits(size))
+		if (this->is_digits(size) && std::stoi(size) > 2) {
 			this->size = std::stoi(size);
+		}
 		else
-			usage();
+			this->usage();
 	}
 }
 
 void	Options::get_args(int argc, char **argv) {
 	for (int i = 1; i < argc ; i++) {
 		for (auto & ent : this->options) {
-			if (argv[i] == ent.first)
-				ent.second = true;				
+			if (argv[i] == ent.first) {
+				// std::cout << "opt  : " << ent.first << std::endl;
+				ent.second = true;
+			}
 		}
 	}
 
 	for (int i = 1; i < argc ; i++) {
 		for (auto & ent : this->heuristic) {
-			if (argv[i] == ent.first)
+			if (argv[i] == ent.first) {
+				// std::cout << "heur  : " << ent.first << std::endl;
 				ent.second = true;				
+			}
 		}
 	}
 }

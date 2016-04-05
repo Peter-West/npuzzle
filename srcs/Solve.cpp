@@ -260,8 +260,6 @@ void	Solve::count_poss(point zero, int point_zero) {
 		count++;
 		add_map_and_swap(zero.x, zero.y + 1, point_zero, g_count);
 	}
-	// this->print();
-	// printf("count pos : %d\n", count);
 	g_count++;
 }
 
@@ -305,16 +303,16 @@ void	Solve::move_empty_point() {
 
 	while (!this->_open_set.empty()) {
 		if (this->goal_reached((*this->_open_set.begin())->map)) {
-			std::cout << "current_node : " << current_node << std::endl;
 			std::cout << "VICTORY !!" << std::endl;
+			std::cout << "Number of selected in the open set : " << current_node << std::endl;
 			this->reverse_path(this->_open_set.begin());
-			// this->print_final_path();
+			this->print_final_path();
 			this->clean();
 			break ;
 		}
 		if (current_node > 0) {
 			if (current_node % 1000 == 0)
-				std::cout << "current_node : " << current_node << std::endl;
+				std::cout << "Number of selected in the open set : " << current_node << std::endl;
 			std::set<node*, ptr_cmp>::iterator it = this->_open_set.begin();
 			this->count_poss((*this->_open_set.begin())->map[point_zero], point_zero);			
 			this->used_node(it);
@@ -327,7 +325,6 @@ void	Solve::move_empty_point() {
 		current_node++;
 	}
 	printf("last node : %zu\n", current_node);
-	printf("Echec !!!!!\n");
 }
 
 void	Solve::to_match(void) {
@@ -385,18 +382,16 @@ void	Solve::print_final_path() {
 			Array[this->_final_path[i]->map[j].y][this->_final_path[i]->map[j].x] = this->_final_path[i]->map[j].value;
 		}
 		std::cout << "******" << std::endl;
-		printf("current ptr : %p\n", this->_final_path[i]);
-		printf("g score : %d\n", this->_final_path[i]->g_score);
-		printf("h cost : %d\n", this->_final_path[i]->h_cost);
-		printf("f score : %d\n", this->_final_path[i]->f_score);
-		printf("parent ptr : %p\n", this->_final_path[i]->parent);
+		// printf("g score : %d\n", this->_final_path[i]->g_score);
+		// printf("h cost : %d\n", this->_final_path[i]->h_cost);
+		// printf("f score : %d\n", this->_final_path[i]->f_score);
 		for (int i = 0 ; i < this->_size ; i++) {
 			for (int j = 0 ; j < this->_size ; j++) {
 				printf("%d ", Array[i][j]);
 			}
 			std::cout << std::endl;
 		}
-		std::cout << "******" << std::endl;
+		std::cout << "******" << std::endl << std::endl;
 	}
 }
 
