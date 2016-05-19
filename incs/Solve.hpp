@@ -6,7 +6,9 @@
 # include <map>
 # include <algorithm>
 # include <set>
+# include <unordered_set>
 # include <iterator>
+# include <exception>
 # include "Astar.hpp"
 
 enum heuristic { md, mt, to };
@@ -21,6 +23,7 @@ struct point {
 
 struct node {
 	std::vector<point>	map;
+	size_t				hash;
 	struct node			*parent;
 	int					h_cost;
 	int					g_score;
@@ -33,6 +36,24 @@ struct ptr_cmp {
 	}
 };
 
+struct hash_vec {
+	unsigned int hash_uint(unsigned int x) const {
+		x = ((x >> 16) ^ x) * 0x45d9f3b;
+		x = ((x >> 16) ^ x) * 0x45d9f3b;
+		x = ((x >> 16) ^ x);
+		return x;
+	}
+
+	std::size_t operator()(node const *n1) const {
+		std::size_t seed = n1->map.size();
+		for(auto i : n1->map) {
+			seed ^= hash_uint(i.value) + 0x9e3779b9 + (seed << 6) + (seed >> 2);
+			seed ^= hash_uint(i.x) + 0x9e3779b9 + (seed << 6) + (seed >> 2);
+			seed ^= hash_uint(i.y) + 0x9e3779b9 + (seed << 6) + (seed >> 2);
+		}
+		return (seed);
+	}
+};
 
 class Solve
 {
@@ -48,7 +69,8 @@ private:
 	std::vector<point>					_solution;
 	std::vector<point>					_points;
 	std::set<node*, ptr_cmp>			_open_set;
-	std::vector<node*>					_closed_set;
+	// std::vector<node*>					_closed_set;
+	std::unordered_set<node*, hash_vec>	_closed_set;
 	std::vector<node*>					_final_path;
 	int									_size;
 	heuristic							_h;

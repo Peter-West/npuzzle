@@ -35,16 +35,52 @@ int		Solve::get_position(int x, int y) {
 
 bool	Solve::match_closed_nodes(std::vector<point> m) {
 	size_t		count_node = 0;
-	hash_vec	hashing;
-	node		*tmp_node = new node;
-	size_t		tmp_hash;
+	size_t		count_point;
 
-	tmp_node->map = m;
-	tmp_hash = hashing(tmp_node);
 	if (!this->_closed_set.empty()) {
-		for (std::unordered_set<node*, hash_vec>::iterator it = this->_closed_set.begin() ; it != this->_closed_set.end() ; it++) {
-			if ((*it)->hash == tmp_hash)
+		for (std::vector<node*>::iterator it = this->_closed_set.begin() ; it != this->_closed_set.end() ; it++) {
+			count_point = 0;
+			std::vector<point>::iterator iit = m.begin();
+			for (size_t p = 0; p != (*it)->map.size() ; p++) {
+				if ((*it)->map[p].value == iit->value && (*it)->map[p].x == iit->x && (*it)->map[p].y == iit->y) {
+					iit++;
+				}
+				else {
+					break ;
+				}
+				if (count_point == m.size() - 1) {
 				return (true);
+	/*				node *tmp_node = new node;
+					tmp_node->map = m;
+					if (this->_h == md) {
+						if (this->heuristic_manhattan_distance(*it) > this->heuristic_manhattan_distance(tmp_node))
+						{
+							printf("false\n");
+							sleep(1);
+							return (false);
+						}
+						else
+						{
+							printf("true\n");
+							return (true);
+						}
+					}
+					else if (this->_h == mt) {
+						if (this->misplaced_tiles(*it) > this->misplaced_tiles(tmp_node))
+							return (false);
+						else
+							return (true);
+					}
+					else if (this->_h == to) {
+						if (this->tiles_out_of_place(*it) > this->tiles_out_of_place(tmp_node))
+							return (false);
+						else
+							return (true);
+					}*/
+				}
+				count_point++;
+
+			}
 			count_node++;
 		}
 	}
@@ -53,16 +89,45 @@ bool	Solve::match_closed_nodes(std::vector<point> m) {
 
 bool	Solve::match_open_nodes(std::vector<point> m) {
 	size_t		count_node = 0;
-	hash_vec	hashing;
-	node		*tmp_node = new node;
-	size_t		tmp_hash;
-	
-	tmp_node->map = m;
-	tmp_hash = hashing(tmp_node);
+	size_t		count_point;
+
 	if (!this->_open_set.empty()) {
 		for (std::set<node*, ptr_cmp>::iterator it = this->_open_set.begin() ; it != this->_open_set.end() ; it++) {
-			if ((*it)->hash == tmp_hash)
-				return (true);
+			count_point = 0;
+			std::vector<point>::iterator iit = m.begin();
+			for (size_t i = 0; i < (*it)->map.size() ; i++) {
+				if ((*it)->map[i].value == iit->value && (*it)->map[i].x == iit->x && (*it)->map[i].y == iit->y) {
+					iit++;
+				}
+				else {
+					break ;
+				}
+				if (count_point == m.size() - 1) {
+					return (true);
+	/*				node *tmp_node = new node;
+					tmp_node->map = m;
+					if (this->_h == md) {
+						if (this->heuristic_manhattan_distance(*it) > this->heuristic_manhattan_distance(tmp_node))
+							return (false);
+						else
+							return (true);
+					}
+					else if (this->_h == mt) {
+						if (this->misplaced_tiles(*it) >= this->misplaced_tiles(tmp_node))
+							return (false);
+						else
+							return (true);
+					}
+					else if (this->_h == to) {
+						if (this->tiles_out_of_place(*it) > this->tiles_out_of_place(tmp_node))
+							return (false);
+						else
+							return (true);
+					}*/
+				}
+				count_point++;
+
+			}
 			count_node++;
 		}
 	}
@@ -145,7 +210,6 @@ void	Solve::add_map_and_swap(int xm, int ym, int i0, int g_count) {
 	std::vector<point>	tmp_map;
 
 	node	*best = *this->_open_set.begin();
-	// printf("best->h_cost : %d\n", best->h_cost);
 	std::vector<point>::iterator it;
 	for (it = best->map.begin() ; it != best->map.end() ; it++) {
 		if (it->x == xm && it->y == ym) {
@@ -169,7 +233,10 @@ void	Solve::add_map_and_swap(int xm, int ym, int i0, int g_count) {
 				node_tmp->f_score = g_count + node_tmp->h_cost;
 				hash_vec hashing;
 				node_tmp->hash = hashing(node_tmp);
+				// printf("hasshhhhhhhhhh : %zu\n", node_tmp->hash);
 				this->_open_set.insert(node_tmp);
+				// if (this->_open_set.insert(node_tmp).second)
+				// 	printf("insert fail !\n");
 			}
 			return ;
 		}
@@ -210,8 +277,7 @@ void	Solve::used_node(std::set<node*, ptr_cmp>::iterator it) {
 
 	tmp_node = *it;
 	tmp_node->map = (*it)->map;
-	tmp_node->hash = (*it)->hash;
-	this->_closed_set.emplace(tmp_node);
+	this->_closed_set.push_back(tmp_node);
 	this->_open_set.erase(it);
 }
 
@@ -342,7 +408,7 @@ void	Solve::clean() {
 	for (std::set<node*, ptr_cmp>::iterator it = this->_open_set.begin() ; it != this->_open_set.end() ; it++) {
 		delete (*it);
 	}
-	for (std::unordered_set<node*, hash_vec>::iterator it = this->_closed_set.begin() ; it != this->_closed_set.end() ; it++) {
+	for (std::vector<node*>::iterator it = this->_closed_set.begin() ; it != this->_closed_set.end() ; it++) {
 		delete (*it);
 	}
 }
